@@ -59,6 +59,7 @@ require_once './_app/Config.inc.php';
               <table class="table">
                 <thead>
                   <tr>
+                    <th scope="col"></th>
                     <th scope="col">Item</th>
                     <th scope="col">Data</th>
                     <th scope="col">Quantidade</th>
@@ -76,6 +77,14 @@ require_once './_app/Config.inc.php';
                     ?>
 
                     <tr>
+                      <th scope="row">
+                        <div class="checkbox">  
+                          <input type="checkbox" id="check<?=$i?>" class="get_value" value="PHP" />
+
+                        </div> 
+
+
+                      </th>
                       <th scope="row"><?= $itens['cod'] ?> </th>
                       <td><?= $itens['date'] ?></td>
                       <td><?= $itens['amount'] ?></td>
@@ -103,12 +112,12 @@ require_once './_app/Config.inc.php';
 
                       $p = array("(", ")", "-", " ");
                       $tel = str_replace($p, "", $itens['telephone']);
-                      $enter = "<br/><br/>";
-                      $enters = "<br/>";
+                      $enter = "\n\n";
+                      $enters = "\n";
                       $text = ""
                               . "Olá, ficou alguma dúvida sobre o orçamento de nº*" . $itens['cod'] . "*" . $enter
                               . "Confira os dados do seu orçamento:" . $enters
-                              . "Modelo:*" . $itens['name'] . "*" . $enters
+                              . "Modelo:* " . $itens['name'] . "*" . $enters
                               . "Quantidade:*" . $itens['amount'] . "*" . $enters
                               . "Malha:*" . $itens['mash'] . "*" . $enter
                               . "*Estampa*" . $enters
@@ -127,12 +136,15 @@ require_once './_app/Config.inc.php';
                       <td><a class="btn badge-primary" target="_blank" href="https://api.whatsapp.com/send?phone=55<?= $tel ?>"><?= $itens['telephone'] ?></a>
                       </td>
                       <td>
-                        <div id="" class="" style="">
-                          <input type="text" id="camptxt<?= $i ?>" class="camptxt<?= $i ?>" value="<?= $text ?>">
+                        <div id="" class="" style="font-size: 8pt">
+                                                   
+                          <textarea id="camptxt<?= $i ?>"><?= $text?></textarea>
+                              
+                    
                         </div>
                       </td>
                       <td>
-                        <a onclick="CopiarTxt('camptxt' + [<?= $i ?>]);" class="btn btn-warning">Copiar</a>
+                        <a onclick="CopiarTxt('camptxt' + [<?= $i ?>], '<?= $itens['cod'] ?>');" class="btn btn-warning">Copiar</a>
                       </td>
 
                     </tr>
@@ -167,18 +179,17 @@ require_once './_app/Config.inc.php';
   <script src="./js/main.min.js"></script>
   <script>
 
-                        function CopiarTxt(camptxt) {
-                         
+                        function CopiarTxt(camptxt, item) {
+
+                          debugger;
                           const myTxt = document.getElementById(camptxt).value;
                           const myT = document.getElementById(camptxt);
-
                           myT.select();
-
                           document.execCommand("copy");
 
-                          alert(myTxt);
                         }
 
+                       
 
   </script>:
 
