@@ -19,19 +19,24 @@ require_once './_app/Config.inc.php';
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,600" rel="stylesheet">
     <link rel="stylesheet" href="css/style.min.css">
 
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+
+    <style>
+      .scroll {
+        max-height: 400px;
+        overflow-y: auto;
+      }
+
+    </style>
+    <link rel="stylesheet" href="css/bootstrap.css">
+
 
     <!-- Google Tag Manager -->
-    <script>(function (w, d, s, l, i) {
-        w[l] = w[l] || [];
-        w[l].push({'gtm.start':
-                  new Date().getTime(), event: 'gtm.js'});
-        var f = d.getElementsByTagName(s)[0],
-                j = d.createElement(s), dl = l != 'dataLayer' ? '&l=' + l : '';
-        j.async = true;
-        j.src =
-                '../../www.googletagmanager.com/gtm5445.html?id=' + i + dl;
-        f.parentNode.insertBefore(j, f);
-      })(window, document, 'script', 'dataLayer', 'GTM-ML4C83');</script>
+
     <!-- End Google Tag Manager -->
   </head>
   <body>
@@ -40,95 +45,144 @@ require_once './_app/Config.inc.php';
                       height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <!-- End Google Tag Manager (noscript) -->
 
-    <div id="app" class="box-center">   
-      <aside class="col-half col-half--first">
-        <figure class="flex-default">
-          <img src="images/logo.png" alt="" class="img"/>
-        </figure>
-
-        <h2 class="tit-principal">Como funciona?</h2>
+    <div id="app" class="row">   
+      <aside class="col col-12">
         <ul class="list-number">
           <?php
           $dados = new Read();
-          $dados->ExeRead("itens");
-
-
-          foreach ($dados->getResult() as $lista) {
-            print "numero do pedido";
-          }
+          $dados->ExeRead("item, product", "WHERE item.id_product = product.id_product ORDER BY date DESC LIMIT 100");
           ?>
+          <div class="row ">
+            <div class="card-body scroll">
+              <div class="card-title col-12 white">Lista de Telefones</div>
+
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th scope="col">Item</th>
+                    <th scope="col">Data</th>
+                    <th scope="col">Quantidade</th>
+                    <th scope="col">Valor</th>
+                    <th scope="col">Telefone</th>
+                    <th>Mensagem</th>
+                    <th scope="col">Text</th>
+
+                  </tr>
+                </thead>
+                <tbody>
+                  <?php
+                  $i = 0;
+                  foreach ($dados->getResult() as $itens) {
+                    ?>
+
+                    <tr>
+                      <th scope="row"><?= $itens['cod'] ?> </th>
+                      <td><?= $itens['date'] ?></td>
+                      <td><?= $itens['amount'] ?></td>
+                      <td><?= $itens['ValueFinalProduct'] ?></td>
+                      <?php
+                      if ($itens['frontSize'] == 'withoutPrint') {
+                        $itens['frontSize'] = 'Sem Estampa';
+                      }
+                      if ($itens['backSize'] == 'withoutPrint') {
+                        $itens['backSize'] = 'Sem Estampa';
+                      }
+
+
+                      $descDin = $itens['ValueFinalProduct'] * 0.95;
+                      $descDine = $itens['ValueFinalProduct'] * 0.05;
+                      $subtotal = $itens['amount'] * $itens['ValueFinalProduct'];
+                      $dessfull = $descDine * $itens['amount'];
+                      $total = $subtotal - $dessfull;
+
+
+                      $dessfull = number_format($dessfull, 2, ',', '.');
+                      $descDins = number_format($descDin, 2, ',', '.');
+                      $valUnit = number_format($itens['ValueFinalProduct'], 2, ',', '.');
+                      $total = number_format($total, 2, ',', '.');
+
+                      $p = array("(", ")", "-", " ");
+                      $tel = str_replace($p, "", $itens['telephone']);
+                      $enter = "<br/><br/>";
+                      $enters = "<br/>";
+                      $text = ""
+                              . "Olá, ficou alguma dúvida sobre o orçamento de nº*" . $itens['cod'] . "*" . $enter
+                              . "Confira os dados do seu orçamento:" . $enters
+                              . "Modelo:*" . $itens['name'] . "*" . $enters
+                              . "Quantidade:*" . $itens['amount'] . "*" . $enters
+                              . "Malha:*" . $itens['mash'] . "*" . $enter
+                              . "*Estampa*" . $enters
+                              . "Frente: *" . $itens['frontSize'] . " " . $itens['frontAmountColor'] . " cores*" . $enters
+                              . "Costas: *" . $itens['backSize'] . " " . $itens['backAmountColor'] . " cores *" . $enter
+                              . "*Valores*" . $enters
+                              . "Valor Unitário: *R$ " . $valUnit . "*" . $enters
+                              . "Valor Unit c/ Desconto: *R$ " . $descDins . "*" . $enters
+                              . "Sub Total: *R$ " . $subtotal . "*" . $enters
+                              . "Desconto Total: *R$ " . $dessfull . "*" . $enters
+                              . "Valor Total: *R$ " . $total . "*" . $enter
+                              . "Vamos dar continuidade?"
+                      ;
+                      ?>
+
+                      <td><a class="btn badge-primary" target="_blank" href="https://api.whatsapp.com/send?phone=55<?= $tel ?>"><?= $itens['telephone'] ?></a>
+                      </td>
+                      <td>
+                        <div id="" class="" style="">
+                          <input type="text" id="camptxt<?= $i ?>" class="camptxt<?= $i ?>" value="<?= $text ?>">
+                        </div>
+                      </td>
+                      <td>
+                        <a onclick="CopiarTxt('camptxt' + [<?= $i ?>]);" class="btn btn-warning">Copiar</a>
+                      </td>
+
+                    </tr>
+
+                    <?php
+                    $i++;
+                  }
+                  ?>
+
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <?php ?>
 
 
 
         </ul>
-        <h6><span style="color: #ffffff;">O gerador de links para o WhatsApp é uma ótima ferramenta para ações de marketing ou relacionamento. Com o link para mensagens personalizadas do WhatsApp, você poderá utilizar em campanhas, redes sociais, email marketing, banners e etc. O bom de encurtar e personalizar links e mensagens do WhatsApp é que funcionará no desktop e no mobile da mesma forma. Faça bom uso da ferramenta encurtadora de WhatsApp.</span></h6>
+
 
       </aside>
 
-      <div class="col-half flex-center">
-        <script async src="./source/pagead2.googlesyndication.com/pagead/js/f.txt"></script>
-        <script>
-            (adsbygoogle = window.adsbygoogle || []).push({
-              google_ad_client: "ca-pub-6656297947223154",
-              enable_page_level_ads: true
-            });
-        </script>
-        <script async src="./source/pagead2.googlesyndication.com/pagead/js/f.txt"></script>
-        <!-- CVTT_WHATSAPP -->
-        <ins class="adsbygoogle"
-             style="display:block"
-             data-ad-client="ca-pub-6656297947223154"
-             data-ad-slot="2494581499"
-             data-ad-format="auto"
-             data-full-width-responsive="true"></ins>
-        <script>
-            (adsbygoogle = window.adsbygoogle || []).push({});
-        </script>
-        <img src="images/logo-whatsapp.png" alt="" class="img img--whatsapp"/>     
-        <h2 class="tit-principal">Gerador de link para Whatsapp</h2>
 
-        <div class="box-mensagem box-mensagem--error" v-if="mensagemError">
-          {{ mensagemError }}
-        </div>    
-
-        <form class="form" @submit="event.preventDefault()" v-if="!sucessForm">
-          <div class="form__control">
-            <label for="numero" class="form__label">N° do celular</label>
-            <input type="text" placeholder="(99) 9 9999-9999" class="form__input" id="numero" v-model="numero" @keyup="validaNumero" />
-            <input type="text" class="input-hidden" v-model="robo" />
-          </div>
-
-          <div class="form__control">
-            <label for="mensagem" class="form__label">Mensagem</label>
-            <input type="text" placeholder="Escreva o texto" class="form__input" id="mensagem" v-model="mensagem"/>
-          </div>
-
-          <button type="submit" class="form__submit" @click="gerarLink">Gerar Link</button>
-          <small class="tit-obs">Não guardamos nenhum dado informado.</small>
-        </form>
-
-        <div class="box-mensagem" v-if="sucessForm">
-          <h2><strong>Pronto!</strong> Copie e compartilhe com usuários do Whatsapp!</h2>    
-
-          <div class="box-input form form--inline">
-            <input type="text" class="form__input form__input--text" v-model="link" />
-            <input type="text" class="input-hidden" v-model="robo" />
-            <button class="form__submit form__input--copy" @click="copiarLink">Copiar Link</button>
-            <button :disabled="encurtado == 1" class="form__submit form__submit--short" @click="ajaxBitly">Encurtar</button>
-          </div>
-
-          <a href="#" class="btn-link" @click="gerarNovoLink">Gerar novo link.</a>
-        </div>
-      </div>
     </div>
+  </div>
 
-    <script src="./source/cdnjs.cloudflare.com/ajax/libs/vue/2.3.4/vue.min.js">
-        debugger;
-    </script> 
-    <script src="./source/unpkg.com/axios%400.17.0/dist/axios.min.js"></script>  
-    <script src="./js/mask.min.js"></script>
-    <script src="./js/main.min.js"></script>
-  </body>
+  <script src="./source/cdnjs.cloudflare.com/ajax/libs/vue/2.3.4/vue.min.js">
 
-  <!-- Mirrored from www.convertte.com.br/gerador-link-whatsapp/ by HTTrack Website Copier/3.x [XR&CO'2014], Wed, 27 Feb 2019 19:03:27 GMT -->
+  </script> 
+  <script src="./source/unpkg.com/axios%400.17.0/dist/axios.min.js"></script>  
+  <script src="./js/mask.min.js"></script>
+  <script src="./js/main.min.js"></script>
+  <script>
+
+                        function CopiarTxt(camptxt) {
+                         
+                          const myTxt = document.getElementById(camptxt).value;
+                          const myT = document.getElementById(camptxt);
+
+                          myT.select();
+
+                          document.execCommand("copy");
+
+                          alert(myTxt);
+                        }
+
+
+  </script>:
+
+</body>
+
+<!-- Mirrored from www.convertte.com.br/gerador-link-whatsapp/ by HTTrack Website Copier/3.x [XR&CO'2014], Wed, 27 Feb 2019 19:03:27 GMT -->
 </html>
