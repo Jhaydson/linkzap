@@ -117,12 +117,12 @@ require_once './_app/Config.inc.php';
                       $text = ""
                               . "Olá, ficou alguma dúvida sobre o orçamento de nº*" . $itens['cod'] . "*" . $enter
                               . "Confira os dados do seu orçamento:" . $enters
-                              . "Modelo:* " . $itens['name'] . "*" . $enters
+                              . "Modelo: *" . $itens['name'] . "*" . $enters
                               . "Quantidade:*" . $itens['amount'] . "*" . $enters
                               . "Malha:*" . $itens['mash'] . "*" . $enter
                               . "*Estampa*" . $enters
                               . "Frente: *" . $itens['frontSize'] . " " . $itens['frontAmountColor'] . " cores*" . $enters
-                              . "Costas: *" . $itens['backSize'] . " " . $itens['backAmountColor'] . " cores *" . $enter
+                              . "Costas: *" . $itens['backSize'] . " " . $itens['backAmountColor'] . " cores*" . $enter
                               . "*Valores*" . $enters
                               . "Valor Unitário: *R$ " . $valUnit . "*" . $enters
                               . "Valor Unit c/ Desconto: *R$ " . $descDins . "*" . $enters
@@ -188,8 +188,6 @@ require_once './_app/Config.inc.php';
                           document.execCommand("copy");
 
                         }
-
-                       
 
   </script>:
 
